@@ -10,7 +10,6 @@ import config
 
 BITCOIN_API_URL = "https://api.coindesk.com/v1/bpi/currentprice.json"
 CURRENCY_API_URL = "https://api.fixer.io/latest?base=USD"
-GOLD_API_URL = "https://service.nfusionsolutions.biz/api/Metals/IntradaySpots?token=11523103-5703-4ef6-87ce-1f847c4c2de7&metals=Gold&currency=USD&indicators=%5B%5D&interval=1&days=1"
 #For new token https://goldprice.com/
 
 
