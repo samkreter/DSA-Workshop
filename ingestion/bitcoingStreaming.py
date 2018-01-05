@@ -16,19 +16,7 @@ CURRENCY_API_URL = "https://api.fixer.io/latest?base=USD"
 def main():
 
     response = apiHelper.GetAPIResponse(getMetalURI())
-
     
-    timestamp = int(response[0]['data']['intervals'][-1]['end'][6:-7])
-
-    print(timestamp)
-
-    print(
-        datetime.datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S')
-    )
-
-    # getDBObject(response)
-
-    # time.sleep(60)
 
 
 def getMetalURI(metal="Gold", interval="1", days="1"):
