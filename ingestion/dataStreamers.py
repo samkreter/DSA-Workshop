@@ -10,7 +10,6 @@ import config
 from influxdb import InfluxDBClient
 
 
-
 BITCOIN_API_URL = "https://api.coindesk.com/v1/bpi/currentprice.json"
 CURRENCY_API_URL = "https://api.fixer.io/latest?base=USD"
 #For new token https://goldprice.com/
