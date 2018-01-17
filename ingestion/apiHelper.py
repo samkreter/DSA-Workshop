@@ -2,7 +2,7 @@ import requests
 import logging
 
 
-def GetAPIResponse(url):
+def GetAPIResponse(url, formatterFunc = None):
     try:
         response = requests.get(url)
     except:
@@ -17,5 +17,5 @@ def GetAPIResponse(url):
         logging.error('GetAPIResponse: Status code not 200')
         return False
 
-    return response.json()
+    return formatterFunc(response.json()) if formatterFunc else response.json()
 
