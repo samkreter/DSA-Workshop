@@ -1,27 +1,20 @@
-package main
+package influxDB
 
 import (  
     "encoding/json"
-    "fmt"
     "github.com/influxdata/influxdb/client/v2"
     "log"
-    "math/rand"
     "time"
 )
+
+type Tags map[string]string
+type Fields map[string]interface{}
 
 const (  
     database = "nodes"
     username = "root"
     password = "root"
 )
-
-var clusters = []string{"public", "private"}
-
-func main() {  
-    c := influxDBClient()
-	writeTestMetrics(c)
-	readTestMetrics(c)
-}
 
 func influxDBClient() client.Client {  
     c, err := client.NewHTTPClient(client.HTTPConfig{
@@ -35,7 +28,7 @@ func influxDBClient() client.Client {
     return c
 }
 
-func writeTestMetrics(c client.Client) {  
+func writePoints(c client.Client, name string, tags Tags, fields Fields, metricTime time.Time) {
     bp, err := client.NewBatchPoints(client.BatchPointsConfig{
         Database:  database,
         Precision: "s",
@@ -44,20 +37,11 @@ func writeTestMetrics(c client.Client) {
         log.Fatal(err)
     }
 
-	tags := map[string]string{
-		"location": "westish",
-	}
-
-	fields := map[string]interface{}{
-		"cpu_usage":  rand.Float64() * 100.0,
-		"disk_usage": rand.Float64() * 100.0,
-	}
-
-	point, err := client.NewPoint(
-		"test_metric",
+    point, err := client.NewPoint(
+		name,
 		tags,
 		fields,
-		time.Now(),
+		metricTime,
 	)
 	if err != nil {
 		log.Fatal(err)
@@ -71,9 +55,10 @@ func writeTestMetrics(c client.Client) {
     }
 }
 
-func readTestMetrics(c client.Client) float64 {  
+//fmt.Sprintf("select * from test_metric where location = '%s'", "westish")
+func readTestMetrics(c client.Client, query string) float64 {  
     q := client.Query{
-        Command:  fmt.Sprintf("select * from test_metric where location = '%s'", "westish"),
+        Command:  query,
         Database: database,
     }
 
