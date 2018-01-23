@@ -1,40 +1,49 @@
 package influxDB
 
 import (  
-    "encoding/json"
-    "github.com/influxdata/influxdb/client/v2"
     "log"
     "time"
+
+    "github.com/influxdata/influxdb/client/v2"
+    "github.com/influxdata/influxdb/models"
 )
 
 type Tags map[string]string
 type Fields map[string]interface{}
 
-const (  
-    database = "nodes"
-    username = "root"
-    password = "root"
-)
 
-func influxDBClient() client.Client {  
+type InfluxdbClient struct {
+    client client.Client
+}
+
+func New(username string, password string) (*InfluxdbClient, error) {  
     c, err := client.NewHTTPClient(client.HTTPConfig{
         Addr:     "http://localhost:8086",
         Username: username,
         Password: password,
     })
     if err != nil {
-        log.Fatalln("Error: ", err)
+        return nil, err
     }
-    return c
+
+    influxdbClient := &InfluxdbClient{
+        client: c,
+    }
+
+    return influxdbClient, nil
 }
 
-func writePoints(c client.Client, name string, tags Tags, fields Fields, metricTime time.Time) {
+func (c *InfluxdbClient) Close() {
+    c.client.Close()
+}
+
+func (c *InfluxdbClient) WritePoints(database string, name string, tags Tags, fields Fields, metricTime time.Time) error{
     bp, err := client.NewBatchPoints(client.BatchPointsConfig{
         Database:  database,
         Precision: "s",
     })
     if err != nil {
-        log.Fatal(err)
+        return err
     }
 
     point, err := client.NewPoint(
@@ -44,36 +53,33 @@ func writePoints(c client.Client, name string, tags Tags, fields Fields, metricT
 		metricTime,
 	)
 	if err != nil {
-		log.Fatal(err)
+		return err
 	}
 
     bp.AddPoint(point)
 
-    err = c.Write(bp)
+    err = c.client.Write(bp)
     if err != nil {
-        log.Fatal(err)
+        return err
     }
+
+    return nil
 }
 
 //fmt.Sprintf("select * from test_metric where location = '%s'", "westish")
-func readTestMetrics(c client.Client, query string) float64 {  
+func (c *InfluxdbClient) ReadMetrics(database string, query string) ([]models.Row, error) {  
     q := client.Query{
         Command:  query,
         Database: database,
     }
 
-    resp, err := c.Query(q)
+    resp, err := c.client.Query(q)
     if err != nil {
-        log.Fatalln("Error: ", err)
+        return nil, err
     }
     if resp.Error() != nil {
         log.Fatalln("Error: ", resp.Error())
     }
 
-    res, err := resp.Results[0].Series[0].Values[0][1].(json.Number).Float64()
-    if err != nil {
-        log.Fatalln("Error: ", err)
-    }
-
-    return res
+    return resp.Results[0].Series, nil
 }

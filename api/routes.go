@@ -19,21 +19,9 @@ var routes = Routes{
 		Index,
 	},
 	Route{
-		"TodoIndex",
+		"GetMetrics",
 		"GET",
-		"/todos",
-		TodoIndex,
-	},
-	Route{
-		"TodoCreate",
-		"POST",
-		"/todos",
-		TodoCreate,
-	},
-	Route{
-		"TodoShow",
-		"GET",
-		"/todos/{todoId}",
-		TodoShow,
+		"/metrics",
+		QueryInfluxDB,
 	},
 }

@@ -1,18 +1,29 @@
 package main
 
 import (
+	"log"
 	"encoding/json"
 	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
-	"strconv"
 
-	"github.com/gorilla/mux"
+	"github.com/samkreter/DSA-Workshop/storage/influxdb"
+)
+
+const (  
+    database = "nodes"
+    username = "root"
+    password = "root"
 )
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Welcome!\n")
+	t := r.URL.Query()["test"]
+	if t == nil {
+		fmt.Fprint(w, "empty")
+	} else {
+			fmt.Fprint(w, t[0])
+	}
 }
 
 func TodoIndex(w http.ResponseWriter, r *http.Request) {
@@ -23,28 +34,32 @@ func TodoIndex(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func TodoShow(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	var todoId int
-	var err error
-	if todoId, err = strconv.Atoi(vars["todoId"]); err != nil {
-		panic(err)
-	}
-	todo := RepoFindTodo(todoId)
-	if todo.Id > 0 {
+func QueryInfluxDB(w http.ResponseWriter, r *http.Request) {
+	query := r.URL.Query()["query"]
+
+	if query == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-		w.WriteHeader(http.StatusOK)
-		if err := json.NewEncoder(w).Encode(todo); err != nil {
-			panic(err)
+		w.WriteHeader(http.StatusBadRequest)
+		if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusBadRequest, Text: "Must proide a query for the database"}); err != nil {
+			log.Fatal(err)
 		}
-		return
 	}
 
-	// If we didn't find it, 404
+	c, err := influxDB.New(username, password)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer c.Close()
+
+	if metrics, err := c.ReadMetrics(database, query); err != nil {
+		log.Fatal(err)
+	}
+
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusNotFound)
-	if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusNotFound, Text: "Not Found"}); err != nil {
-		panic(err)
+	w.WriteHeader(http.StatusOK)
+	if err := json.NewEncoder(w).Encode(metrics); err != nil {
+		log.Fatal(err)
 	}
 
 }
