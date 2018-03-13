@@ -14,6 +14,8 @@ BITCOIN_API_URL = "https://api.coindesk.com/v1/bpi/currentprice.json"
 CURRENCY_API_URL = "https://api.fixer.io/latest?base=USD"
 #For new token https://goldprice.com/
 
+#https://api.coindesk.com/v1/bpi/historical/close.json?start=2013-09-01&end=2018-03-12
+
 def putInDB(data):
     client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
 
