@@ -48,6 +48,58 @@ func getCurrencyURL(apiKey string, date string, base string) string {
 	return r.Replace(CurrencyAPITemplate)
 }
 
+type MetalIntervals struct {
+	Intervals 	[]MetalInterval 	`json:"intervals"`
+}
+
+type MetalInterval struct {
+	Timestamp	string 	`json:"start"`
+	Price   	float64   `json:"open"`
+}
+
+func main(){
+	c, err := influxDB.New(username, password)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer c.Close()
+
+	raw, err := ioutil.ReadFile("./python-extract/gold.json")
+    if err != nil {
+        log.Fatal(err)
+    }
+
+    var goldData MetalIntervals
+    err = json.Unmarshal(raw, &goldData)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	for _, goldInterval := range goldData.Intervals{
+
+		timestampInt, err := strconv.ParseInt(goldInterval.Timestamp, 10, 64)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		timestamp := time.Unix(timestampInt, 0)
+
+		fields := influxDB.Fields{
+			"price": goldInterval.Price,
+		}
+
+		err = c.WritePoints(database, "Gold", influxDB.Tags{}, fields, timestamp)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+	}
+
+	log.Println("Finished Loading into influxdb")
+}
+
+
 func ConvertDateToTime(date string) time.Time {
 	layout := "2006-01-02"
 	timestamp, err := time.Parse(layout, date)
@@ -58,7 +110,7 @@ func ConvertDateToTime(date string) time.Time {
 	return timestamp
 }
 
-func main() {
+func AddCurrencyApI() {
 	c, err := influxDB.New(username, password)
 	if err != nil {
 		log.Fatal(err)

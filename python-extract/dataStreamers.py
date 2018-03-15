@@ -16,6 +16,8 @@ CURRENCY_API_URL = "https://api.fixer.io/latest?base=USD"
 
 #https://api.coindesk.com/v1/bpi/historical/close.json?start=2013-09-01&end=2018-03-12
 
+#https://service.nfusionsolutions.biz/api/Metals/HistoricalSpots?token=11523103-5703-4ef6-87ce-1f847c4c2de7&metals=Gold&currency=USD&indicators=%5B%5D&start=2008-03-16&end=2018-03-15
+
 def putInDB(data):
     client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
 
@@ -27,19 +29,20 @@ def putInDB(data):
 def main():
 
     #Bitcoin
-    bitcoinData = apiHelper.GetAPIResponse(BITCOIN_API_URL, createBitcoinJSON)
+    #bitcoinData = apiHelper.GetAPIResponse(BITCOIN_API_URL, createBitcoinJSON)
     
     #Currencies
-    currencyData = apiHelper.GetAPIResponse(CURRENCY_API_URL, createCurrencyJSON)
+    #currencyData = apiHelper.GetAPIResponse(CURRENCY_API_URL, createCurrencyJSON)
 
     #Gold
-    goldData = apiHelper.GetAPIResponse(getMetalURI(), createMetalJSON)
+    goldData = apiHelper.GetAPIResponse(getMetalURI(interval=1440, days=1000))
+    print(goldData)
 
     #Silver
-    resp = apiHelper.GetAPIResponse(getMetalURI("Silver"))
-    silverData = createMetalJSON(resp, "Silver")
+    #resp = apiHelper.GetAPIResponse(getMetalURI("Silver"))
+    #silverData = createMetalJSON(resp, "Silver")
 
-    putInDB(currencyData)
+    #putInDB(currencyData)
 
 def getMetalURI(metal="Gold", interval="1", days="1"):
     
