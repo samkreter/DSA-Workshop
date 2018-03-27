@@ -5,7 +5,7 @@ services:
     ports:
     - 8086:8086
     volumes:
-    - ~/dockerDirs/influxdb-data:/var/lib/influxdb
+    - ~/filesharetest:/var/lib/influxdb
 
   grafana:
     image: grafana/grafana

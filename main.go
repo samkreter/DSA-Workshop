@@ -65,7 +65,7 @@ func main(){
 
 	defer c.Close()
 
-	raw, err := ioutil.ReadFile("./silver.json")
+	raw, err := ioutil.ReadFile("/Users/samkreter/dockerDirs/platinum.json")
     if err != nil {
         log.Fatal(err)
     }
@@ -89,7 +89,7 @@ func main(){
 			"price": goldInterval.Price,
 		}
 
-		err = c.WritePoints(database, "Silver", influxDB.Tags{}, fields, timestamp)
+		err = c.WritePoints(database, "Platinum", influxDB.Tags{}, fields, timestamp)
 		if err != nil {
 			log.Fatal(err)
 		}

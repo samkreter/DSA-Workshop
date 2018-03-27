@@ -15,13 +15,13 @@ var routes = Routes{
 	Route{
 		"Index",
 		"GET",
-		"/",
+		"/{test}",
 		Index,
 	},
 	Route{
 		"GetMetrics",
 		"GET",
-		"/metrics",
+		"/metrics/{series}",
 		QueryInfluxDB,
 	},
 }
