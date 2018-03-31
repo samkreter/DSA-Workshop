@@ -27,7 +27,7 @@ json_body = [
     }
 ]
 
-client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
+client = InfluxDBClient('localhost', 8086, 'root', 'root', 'mydb')
 
 #client.create_database('example')
 
