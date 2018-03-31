@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 	//"io"
 	//"io/ioutil"
 	"log"
@@ -40,16 +41,31 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	log.Println("done")
 }
 
-func QueryInfluxDB(w http.ResponseWriter, r *http.Request) {
-	// query := r.URL.Query()["query"]
+func CheckAndConvertInputDate(date string) (string, bool) {
+	if date == "" {
+		return "", true
+	}
 
-	// if query == nil {
-	// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	// 	w.WriteHeader(http.StatusBadRequest)
-	// 	if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusBadRequest, Text: "Must proide a query for the database"}); err != nil {
-	// 		log.Fatal(err)
-	// 	}
-	// }
+	layout := "2006-01-02"
+	timestamp, err := time.Parse(layout, date)
+	if err != nil {
+		return "", false
+	}
+	return timestamp.Format("2006-01-02 15:04:05"), true
+}
+
+func QueryInfluxDB(w http.ResponseWriter, r *http.Request) {
+	urlParams := r.URL.Query()
+	start, startOk := CheckAndConvertInputDate(urlParams.Get("start"))
+	end, endOk := CheckAndConvertInputDate(urlParams.Get("end"))
+
+	if !startOk || !endOk {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusBadRequest)
+		if err := json.NewEncoder(w).Encode(jsonErr{Code: http.StatusBadRequest, Text: "Start and end date must be in the form YYYY-MM-DD. Thanks and have a wonderful day."}); err != nil {
+			log.Fatal(err)
+		}
+	}
 
 	series := mux.Vars(r)["series"]
 
@@ -81,8 +97,13 @@ func QueryInfluxDB(w http.ResponseWriter, r *http.Request) {
 
 	defer c.Close()
 
-	query := fmt.Sprintf("Select price from %s", queryDb)
-
+	var query string
+	if start == "" || end == "" {
+		query = fmt.Sprintf("Select price from %s", queryDb)
+	} else {
+		query = fmt.Sprintf("Select price from %s where time > '%s' and time < '%s'", queryDb, start, end)
+	}
+	log.Println(query)
 	metrics, err := c.ReadMetrics(database, query)
 	if err != nil {
 		log.Fatal(err)
