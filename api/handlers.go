@@ -90,7 +90,7 @@ func QueryInfluxDB(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	c, err := influxDB.New(username, password)
+	c, err := influxDB.New(username, password, "influxdb")
 	if err != nil {
 		log.Fatal(err)
 	}

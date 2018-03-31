@@ -1,52 +1,51 @@
 package influxDB
 
-import (  
-    "log"
-    "time"
+import (
+	"log"
+	"time"
 
-    "github.com/influxdata/influxdb/client/v2"
-    "github.com/influxdata/influxdb/models"
+	"github.com/influxdata/influxdb/client/v2"
+	"github.com/influxdata/influxdb/models"
 )
 
 type Tags map[string]string
 type Fields map[string]interface{}
 
-
 type InfluxdbClient struct {
-    client client.Client
+	client client.Client
 }
 
-func New(username string, password string) (*InfluxdbClient, error) {  
-    c, err := client.NewHTTPClient(client.HTTPConfig{
-        Addr:     "http://localhost:8086",
-        Username: username,
-        Password: password,
-    })
-    if err != nil {
-        return nil, err
-    }
+func New(username string, password string, host string) (*InfluxdbClient, error) {
+	c, err := client.NewHTTPClient(client.HTTPConfig{
+		Addr:     "http://" + host + ":8086",
+		Username: username,
+		Password: password,
+	})
+	if err != nil {
+		return nil, err
+	}
 
-    influxdbClient := &InfluxdbClient{
-        client: c,
-    }
+	influxdbClient := &InfluxdbClient{
+		client: c,
+	}
 
-    return influxdbClient, nil
+	return influxdbClient, nil
 }
 
 func (c *InfluxdbClient) Close() {
-    c.client.Close()
+	c.client.Close()
 }
 
-func (c *InfluxdbClient) WritePoints(database string, name string, tags Tags, fields Fields, metricTime time.Time) error{
-    bp, err := client.NewBatchPoints(client.BatchPointsConfig{
-        Database:  database,
-        Precision: "s",
-    })
-    if err != nil {
-        return err
-    }
+func (c *InfluxdbClient) WritePoints(database string, name string, tags Tags, fields Fields, metricTime time.Time) error {
+	bp, err := client.NewBatchPoints(client.BatchPointsConfig{
+		Database:  database,
+		Precision: "s",
+	})
+	if err != nil {
+		return err
+	}
 
-    point, err := client.NewPoint(
+	point, err := client.NewPoint(
 		name,
 		tags,
 		fields,
@@ -56,30 +55,30 @@ func (c *InfluxdbClient) WritePoints(database string, name string, tags Tags, fi
 		return err
 	}
 
-    bp.AddPoint(point)
+	bp.AddPoint(point)
 
-    err = c.client.Write(bp)
-    if err != nil {
-        return err
-    }
+	err = c.client.Write(bp)
+	if err != nil {
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 //fmt.Sprintf("select * from test_metric where location = '%s'", "westish")
-func (c *InfluxdbClient) ReadMetrics(database string, query string) ([]models.Row, error) {  
-    q := client.Query{
-        Command:  query,
-        Database: database,
-    }
+func (c *InfluxdbClient) ReadMetrics(database string, query string) ([]models.Row, error) {
+	q := client.Query{
+		Command:  query,
+		Database: database,
+	}
 
-    resp, err := c.client.Query(q)
-    if err != nil {
-        return nil, err
-    }
-    if resp.Error() != nil {
-        log.Fatalln("Error: ", resp.Error())
-    }
+	resp, err := c.client.Query(q)
+	if err != nil {
+		return nil, err
+	}
+	if resp.Error() != nil {
+		log.Fatalln("Error: ", resp.Error())
+	}
 
-    return resp.Results[0].Series, nil
+	return resp.Results[0].Series, nil
 }
