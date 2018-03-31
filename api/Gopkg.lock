@@ -27,7 +27,7 @@
   branch = "master"
   name = "github.com/samkreter/DSA-Workshop"
   packages = ["storage/influxdb"]
-  revision = "20ba49aa854088a0ac1d6939341bb5eb7a03cf19"
+  revision = "c7706e83b47ba82298bc6618db8330fe9d4d0bab"
 
 [solve-meta]
   analyzer-name = "dep"
