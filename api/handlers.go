@@ -10,7 +10,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/samkreter/DSA-Workshop/storage/influxdb"
+	"github.com/samkreter/golang-utils/storage/influxdb"
 )
 
 const (
