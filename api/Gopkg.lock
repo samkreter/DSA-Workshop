@@ -25,13 +25,13 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/samkreter/DSA-Workshop"
+  name = "github.com/samkreter/golang-utils"
   packages = ["storage/influxdb"]
-  revision = "03ebd274d5b02722248ec74a0a6fa7a4d26f5b28"
+  revision = "a475ffdefc17c8256277dde1612ecee5ed0ee125"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cc1197f12c943256efa236f3d5f482e425f1aae865ab9a99d11f9a51d6fcc193"
+  inputs-digest = "1a54ef17560865c627a7901e27c167f2cccdc881e1fc6c3a4caa75db84ea95f9"
   solver-name = "gps-cdcl"
   solver-version = 1
