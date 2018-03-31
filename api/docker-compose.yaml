@@ -5,9 +5,10 @@ services:
     ports:
     - 8086:8086
     volumes:
-    - /devdisk/influxdb-data:/var/lib/influxdb
+    - ~/dockerDirs/influxdb-data:/var/lib/influxdb
 
   api:
     image: pskreter/db-api:stable
+    restart: always
     ports:
-    - 80:8080
+    - 8080:8080
