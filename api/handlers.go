@@ -27,18 +27,7 @@ type SeriesEntry struct {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	//t := r.URL.Query()["test"]
-	vars := mux.Vars(r)
-
-	t := vars["test"]
-
-	if t == "" {
-		fmt.Fprint(w, "empty")
-	} else {
-		fmt.Fprint(w, t)
-	}
-
-	log.Println("done")
+	http.Redirect(w, r, "http://samkreter.github.io", http.StatusSeeOther)
 }
 
 func CheckAndConvertInputDate(date string) (string, bool) {

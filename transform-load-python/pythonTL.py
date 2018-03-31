@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 POINT_BUFFER = 10
 INFLUXDB_HOST = "localhost"
 DATABASE_NAME = "mydb"
-API_URL = "http://samkreter.com/metrics/{measurement}?start={start}&end={end}"
+API_URL = "http://samkreter.com/api/metrics/{measurement}?start={start}&end={end}"
 
 def GetAPIResponse(url):
     try:
