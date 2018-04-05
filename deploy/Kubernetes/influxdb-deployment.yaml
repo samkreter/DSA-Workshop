@@ -27,7 +27,7 @@ spec:
   resources:
     requests:
       storage: 500Mi
-  
+
 ---
 
 apiVersion: v1

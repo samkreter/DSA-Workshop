@@ -88,7 +88,7 @@ func QueryInfluxDB(w http.ResponseWriter, r *http.Request) {
 
 	var query string
 	if start == "" || end == "" {
-		query = fmt.Sprintf("Select price from %s", queryDb)
+		query = fmt.Sprintf("Select price from %s where time > 2017-01-01 and time < 2018-01-01", queryDb)
 	} else {
 		query = fmt.Sprintf("Select price from %s where time > '%s' and time < '%s'", queryDb, start, end)
 	}
