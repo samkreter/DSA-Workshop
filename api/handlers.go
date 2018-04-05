@@ -48,6 +48,16 @@ func QueryInfluxDB(w http.ResponseWriter, r *http.Request) {
 	start, startOk := CheckAndConvertInputDate(urlParams.Get("start"))
 	end, endOk := CheckAndConvertInputDate(urlParams.Get("end"))
 
+	if start == "" {
+		log.Println("Using Default Start: 2017-01-01")
+		start = "2017-01-01"
+	}
+
+	if end == "" {
+		log.Println("Using Default End: 2018-01-01")
+		end = "2018-01-01"
+	}
+
 	if !startOk || !endOk {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusBadRequest)
