@@ -7,10 +7,26 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 80
+  - name: "3000"
+    port: 3000
     targetPort: 3000
   selector:
     app: grafana
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  label:
+    app: grafana
+  name: grafana-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Mi
 
 ---
 
@@ -32,4 +48,11 @@ spec:
         name: grafana
         ports:
         - containerPort: 3000
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-claim
       restartPolicy: Always
+      volumes:
+      - name: grafana-claim
+        persistentVolumeClaim:
+          claimName: grafana-claim

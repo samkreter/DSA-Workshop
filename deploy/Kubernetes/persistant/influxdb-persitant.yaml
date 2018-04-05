@@ -1,4 +1,4 @@
-apiVersion: v1
+apiVersion: extensions/v1beta1
 kind: Service
 metadata:
   labels:
@@ -15,6 +15,22 @@ spec:
 ---
 
 apiVersion: extensions/v1beta1
+kind: PersistentVolumeClaim
+metadata:
+  creationTimestamp: null
+  labels:
+    app: influxdb
+  name: influxdb-claim
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Mi
+
+---
+
+apiVersion: apps/v1
 kind: Deployment
 metadata: 
   labels:
@@ -32,4 +48,11 @@ spec:
         name: influxdb
         ports:
         - containerPort: 8086
+        volumeMounts:
+        - mountPath: /var/lib/influxdb
+          name: influxdb-claim
       restartPolicy: Always
+      volumes:
+      - name: influxdb-claim
+        persistentVolumeClaim:
+          claimName: influxdb-claim

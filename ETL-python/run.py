@@ -5,13 +5,9 @@ import requests
 import logging
 import sys
 
-#Set up logging stuff
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 #Base defaults. No worries on changing these
 POINT_BUFFER = 1000 #Number of points to buffer before writtening them to INfluxdb
-INFLUXDB_HOST = "localhost"
+INFLUXDB_HOST = "influxdb" #TODO: pass env with localhost default
 DATABASE_NAME = "BitcoinTest"
 API_URL = "http://samkreter.com/api/metrics/{measurement}?start={start}&end={end}"
 
@@ -19,15 +15,15 @@ def GetAPIResponse(url):
     try:
         response = requests.get(url)
     except Exception as e:
-        logger.error('Failed to get from URL: ' + str(e))
+        print('GetAPIResponse: Failed to get from URL: ' + str(e))
         return False
 
     if(response == None):
-        logger.error('GetAPIResponse: No Request')
+        print('GetAPIResponse: No Request')
         return False
 
     if(response.status_code != 200):
-        logger.error('GetAPIResponse: Non 200 status code of ' +
+        print('GetAPIResponse: Non 200 status code of ' +
                      str(response.status_code))
         return False
 
@@ -46,10 +42,9 @@ def CreateInfluxdbPoint(measurement, price, timestamp):
 
 
 def AddDataToInfluxdb(client, json_data, measurement):
-    buffered_count = 0
     point_buffer = []
 
-    logger.info("Processing and adding %d points to the databases.", len(json_data))
+    print("Processing and adding %d points to the databases.", len(json_data))
 
     for data_point in json_data:
         #Tranform the JSON response into the correct format
@@ -60,8 +55,6 @@ def AddDataToInfluxdb(client, json_data, measurement):
         #If we have more points than the buffer, 
         # write all points to the DB and clear the buffer
         if len(point_buffer) > POINT_BUFFER:
-            print("Adding buffered Points: ", buffered_count)
-            buffered_count += 1
             client.write_points(point_buffer)
             point_buffer = []
     
@@ -86,7 +79,7 @@ def main():
     #Loop through the list of start and end dates
     for i in range(len(dates) - 1):
         
-        logger.info("Getting data for start: " + dates[i] + " end: " + dates[i + 1])
+        print("\nGetting data for start: " + dates[i] + " end: " + dates[i + 1])
         
         #Construct the api url
         url = API_URL.format(measurement = measurement, start = dates[i], end = dates[i + 1])
@@ -97,6 +90,8 @@ def main():
             sys.exit(1)
 
         AddDataToInfluxdb(client, json_data, measurement)
+
+    print("DONE!")
 
 if __name__ == '__main__':
     main()
