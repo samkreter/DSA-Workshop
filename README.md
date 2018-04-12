@@ -1,14 +1,19 @@
-# DataScienceMicroServices
-Using a simple plug and play micro service architecture with data science applications
+# Data Science Powered by Kubernetes and Microservices in Azure
+An example of using microservice architecture powered by Kubernetes and Azure.
 
-#Deploying an AKS Cluster
+# Overview
 
-1. Open up Cloudshell
+
+
+
+# Deploying an AKS Cluster
+
+1. Open up Cloudshell, choose either a or b. I like a the most.
 
     a. Go to shell.azure.com
 
-    b. click the shell button from the Azure Portal  ![cloudshell](/images/cloudshell2.png)
-
+    b. click the shell button from the Azure Portal  
+    ![](https://github.com/samkreter/DSA-Workshop/blob/master/images/cloudshell2.png)
 2. Make sure you have the preview mode enabled
     ```Bash
     az provider register -n Microsoft.Network
@@ -17,7 +22,7 @@ Using a simple plug and play micro service architecture with data science applic
     az provider register -n Microsoft.ContainerService
     ```
 
-3. Create a Resource Group, see docs/AzureTerms.md for more information on what a resource group is.
+3. Create a Resource Group, see the Azure page in the repo wiki for more information on what a resource group is.
 
     ```Bash
     az group create --name <resourceGroupName> --location eastus
@@ -37,7 +42,7 @@ Using a simple plug and play micro service architecture with data science applic
 
     --generate-ssh-keys: We want it to handle the ssh stuff
 
-    *NOTE:* This should show a `Running..` for a long time. That is expected. If you see an error retry it again.
+    **NOTE:** This should show a `Running..` for a long time. That is expected. If you see an error retry it again.
 
 5. Now we need to get access to the cluster using kubectl. To have azure set it up automagicly, run:
 
