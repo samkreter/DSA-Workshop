@@ -1,4 +1,4 @@
-# Data Science Powered by Kubernetes and Microservices in Azure
+# Data Science Powered by Kubernetes and Microservices in Azure
 An example of using microservice architecture powered by Kubernetes and Azure.
 
 **NOTE:** This is a live repo. If you see something wrong or have a data science / microservice idea make a PR. I have the Contributions folder set up to add in any idea you guys have to build. I'll be checking the PRs and giving feedback. Great way to give to an open source project and get others feedback. 
