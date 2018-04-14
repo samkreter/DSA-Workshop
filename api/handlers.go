@@ -3,11 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"time"
-	//"io"
-	//"io/ioutil"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"github.com/samkreter/golang-utils/storage/influxdb"
@@ -125,33 +123,23 @@ func QueryInfluxDB(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/*
-Test with this curl command:
+type jsonErr struct {
+	Code int    `json:"code"`
+	Text string `json:"text"`
+}
 
-curl -H "Content-Type: application/json" -d '{"name":"New Todo"}' http://localhost:8080/todos
+func Logger(inner http.Handler, name string) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
 
-*/
-// func TodoCreate(w http.ResponseWriter, r *http.Request) {
-// 	var todo Todo
-// 	body, err := ioutil.ReadAll(io.LimitReader(r.Body, 1048576))
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	if err := r.Body.Close(); err != nil {
-// 		panic(err)
-// 	}
-// 	if err := json.Unmarshal(body, &todo); err != nil {
-// 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 		w.WriteHeader(422) // unprocessable entity
-// 		if err := json.NewEncoder(w).Encode(err); err != nil {
-// 			panic(err)
-// 		}
-// 	}
+		inner.ServeHTTP(w, r)
 
-// 	t := RepoCreateTodo(todo)
-// 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-// 	w.WriteHeader(http.StatusCreated)
-// 	if err := json.NewEncoder(w).Encode(t); err != nil {
-// 		panic(err)
-// 	}
-// }
+		log.Printf(
+			"%s\t%s\t%s\t%s",
+			r.Method,
+			r.RequestURI,
+			name,
+			time.Since(start),
+		)
+	})
+}

@@ -15,27 +15,8 @@ func init() {
 
 func main() {
 
-	router := NewRouter()
-	log.Println("Listing on port ", port)
+	router := mux.NewRouter()
+	router.HandleFunc("/", Index).Methods("GET")
+	router.HandleFunc("/api/metrics/{series}", QueryInfluxDB).Methods("GET")
 	log.Fatal(http.ListenAndServe(port, router))
-}
-
-func NewRouter() *mux.Router {
-
-	router := mux.NewRouter().StrictSlash(true)
-	for _, route := range routes {
-		var handler http.Handler
-
-		handler = route.HandlerFunc
-		handler = Logger(handler, route.Name)
-
-		router.
-			Methods(route.Method).
-			Path(route.Pattern).
-			Name(route.Name).
-			Handler(handler)
-
-	}
-
-	return router
 }
