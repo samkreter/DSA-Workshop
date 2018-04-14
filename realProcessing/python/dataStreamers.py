@@ -16,8 +16,6 @@ CURRENCY_API_URL = "https://api.fixer.io/latest?base=USD"
 
 #https://api.coindesk.com/v1/bpi/historical/close.json?start=2013-09-01&end=2018-03-12
 
-#https://service.nfusionsolutions.biz/api/Metals/HistoricalSpots?token=11523103-5703-4ef6-87ce-1f847c4c2de7&metals=Gold&currency=USD&indicators=%5B%5D&start=2008-03-16&end=2018-03-15
-
 def putInDB(data):
     client = InfluxDBClient('localhost', 8086, 'root', 'root', 'example')
 
