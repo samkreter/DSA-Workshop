@@ -1,0 +1,23 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: coffeeshop
+  labels:
+    app: coffeeshop
+spec:
+  selector:
+    matchLabels:
+      app: coffeeshop
+  template:
+    metadata:
+      labels:
+        app: coffeeshop
+    spec:
+      containers:
+      - image: pskreter/coffeeshop
+        name: coffeeshop
+        ports:
+        - containerPort: 80
+        imagePullPolicy: Always
+
+      restartPolicy: Always
