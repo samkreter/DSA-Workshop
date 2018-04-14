@@ -44,7 +44,7 @@ def CreateInfluxdbPoint(measurement, price, timestamp):
 def AddDataToInfluxdb(client, json_data, measurement):
     point_buffer = []
 
-    print("Processing and adding %d points to the databases.", len(json_data))
+    print("Processing and adding " + str(len(json_data)) + " points to the databases.")
 
     for data_point in json_data:
         #Tranform the JSON response into the correct format

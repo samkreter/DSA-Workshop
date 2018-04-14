@@ -7,4 +7,4 @@ RUN pip install -r /requirements.txt
 COPY . /app
 WORKDIR /app
 
-CMD [ "python", "run.py" ]
+CMD ["python","-u","run.py"]
