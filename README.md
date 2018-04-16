@@ -25,7 +25,9 @@ This project covers
 
 * **deploy:** holds the needed deployment configurations. There are configurations for both docker-compose and Kubernetes. We are much more focused on the Kubernetes here.
 
-* **realProcessing:** code for how I got the original data. If you are interested in some golang time transforming and basic data extration using golang and python. Nothing too interesting. 
+* **tryDataProcessing:** starter code for getting the data out of the database and interacting with it. 
+
+* **realDataAcquisition:** code for how I got the original data. If you are interested in some golang time transforming and basic data extration using golang and python. Nothing too interesting. 
 
 * **Contributions:** the cool stuff that you guys have come up with and decided to make a PR. Send in your ideas to show them off and get feedback!
 
