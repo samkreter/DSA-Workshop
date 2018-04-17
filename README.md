@@ -49,10 +49,14 @@ This project covers
 
 1. Open up Cloudshell, choose either a or b. I like a the most.
 
-    a. Go to shell.azure.com
+    a1. Go to shell.azure.com
 
-    b. click the shell button from the Azure Portal  
+    or
+
+    a2. click the shell button from the Azure Portal  
     ![](https://github.com/samkreter/DSA-Workshop/blob/master/images/cloudshell2.png)
+
+    b. The first time you open this, you will need to select a subscription and click to create storage. 
 
 2. Make sure you have the preview mode enabled
     ```Bash
@@ -65,7 +69,7 @@ This project covers
 3. Create a Resource Group, see the [Azure Wiki Page](https://github.com/samkreter/DSA-Workshop/wiki/Azure) in this repo for more information on what a resource group is.
 
     ```Bash
-    az group create --name <resourceGroupName> --location eastus
+    az group create --name <resourceGroupName> --location centralus
     ```
 
 4. Create the Kubernetes Cluster
@@ -132,7 +136,7 @@ This project covers
 
 ## Deploy Everything to Kubernetes Cluster
 
-1. Back in Cloud Shell, either clone the repo again or upload the deploy/Kubernetes folder. Either drag and drop the folder onto the screen or click the upload button. 
+1. Back in Cloud Shell, either clone the repo again or upload the two .yaml files in the deploy/Kubernetes folder (grafana-deployment.yaml and influxdb-deployment.yaml). To upload either drag and drop the folder onto the screen or click the upload button. 
 
 2. Once inside the Kubernetes folder in Cloud Shell, first we are going to deploy the grafana dashboard bacuse sometimes it take Azure some time to give us a public IP address.
 
